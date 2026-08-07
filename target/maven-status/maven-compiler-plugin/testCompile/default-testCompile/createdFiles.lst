@@ -1,0 +1,4 @@
+com\merchant\domain\OrderTest.class
+com\merchant\domain\ProductCatalogueTest.class
+com\merchant\service\OrderServiceTest.class
+com\merchant\domain\ProductTest.class
