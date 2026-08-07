@@ -1,0 +1,7 @@
+com\merchant\domain\ProductCatalogue.class
+com\merchant\domain\Customer.class
+com\merchant\domain\Product.class
+com\merchant\service\OrderService.class
+com\merchant\app\PayNestApplication.class
+com\merchant\domain\Order.class
+com\merchant\domain\OrderItem.class
