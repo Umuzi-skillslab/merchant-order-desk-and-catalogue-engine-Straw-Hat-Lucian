@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import com.merchant.payment.PaymentMethod;
 import com.merchant.payment.PaymentProcessor;
+import com.merchant.payment.Refundable;
 
 public class Order {
     // Attributes
@@ -59,6 +60,19 @@ public class Order {
             System.out.println("Order #" + id + " was NOT completed. Payment failed.");
         }
 
+        return success;
+    }
+    // Checkout that only accepts payment types that can be refunded
+    public boolean refundableCheckout(Refundable payment) {
+        if (payment == null) {
+            throw new IllegalArgumentException("Refundable payment cannot be null");
+        }
+
+        boolean success = checkout(payment);
+
+        if (success) {
+            System.out.println("This payment can be refunded via " + payment.getPaymentType());
+        }
         return success;
     }
 

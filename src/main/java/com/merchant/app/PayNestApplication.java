@@ -7,7 +7,7 @@ import com.merchant.domain.ProductCatalogue;
 import com.merchant.service.OrderService;
 import com.merchant.payment.CardPayment;
 import com.merchant.payment.PaymentMethod;
-
+import com.merchant.payment.Refundable;
 
 import java.math.BigDecimal;
 
@@ -40,6 +40,12 @@ public class PayNestApplication {
 
         service.printOrderSummary(order);
         PaymentMethod paymentMethod = new CardPayment();
-        order.checkout(paymentMethod);
+        if (paymentMethod instanceof  Refundable) {
+            Refundable refundable = (Refundable) paymentMethod;
+            order.refundableCheckout(refundable);
+
+        } else {
+            order.checkout(paymentMethod);
+        }
     }
 }
