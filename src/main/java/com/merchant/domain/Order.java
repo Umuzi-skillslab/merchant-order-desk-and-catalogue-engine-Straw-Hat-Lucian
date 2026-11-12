@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import com.merchant.payment.PaymentMethod;
+import com.merchant.payment.PaymentProcessor;
 
 public class Order {
     // Attributes
@@ -36,6 +38,28 @@ public class Order {
             total = total.add(item.getLineTotal());
         }
         return total;
+    }
+
+    public boolean checkout(PaymentMethod paymentMethod) {
+        if (paymentMethod == null) {
+            throw new IllegalArgumentException("Payment Method cannot be null");
+        }
+        if (items.isEmpty()) {
+            throw new IllegalStateException("Cannot check out and empty order");
+        }
+
+        BigDecimal total = calculateTotal();
+
+        PaymentProcessor processor = new PaymentProcessor();
+        boolean success = processor.processPayment(paymentMethod, total.doubleValue());
+
+        if (success) {
+            System.out.println("Order #" + id + " completed. Paid via " + paymentMethod.getPaymentType() + ": R" + total);
+        } else  {
+            System.out.println("Order #" + id + " was NOT completed. Payment failed.");
+        }
+
+        return success;
     }
 
     // Getters

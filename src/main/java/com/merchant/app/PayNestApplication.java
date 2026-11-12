@@ -5,6 +5,9 @@ import com.merchant.domain.Order;
 import com.merchant.domain.Product;
 import com.merchant.domain.ProductCatalogue;
 import com.merchant.service.OrderService;
+import com.merchant.payment.CardPayment;
+import com.merchant.payment.PaymentMethod;
+
 
 import java.math.BigDecimal;
 
@@ -36,5 +39,7 @@ public class PayNestApplication {
         service.addProductToOrder(order, catalogue, mouse.getId(), 1);
 
         service.printOrderSummary(order);
+        PaymentMethod paymentMethod = new CardPayment();
+        order.checkout(paymentMethod);
     }
 }
