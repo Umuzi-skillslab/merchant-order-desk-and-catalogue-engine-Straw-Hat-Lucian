@@ -23,7 +23,7 @@ class PaymentMethodTest {
 
     @Test
     void checkoutWorksWithEveryPaymentType() {
-        List<PaymentMethod> methods = List.of(new CardPayment(), new EftPayment(), new WalletPayment());
+        List<PaymentMethod> methods = List.of(new CardPayment(), new EftPayment(), new WalletPayment(), new BuyNowPayLaterPayment());
 
         for (PaymentMethod method : methods) {
             assertTrue(buildOrder().checkout(method));

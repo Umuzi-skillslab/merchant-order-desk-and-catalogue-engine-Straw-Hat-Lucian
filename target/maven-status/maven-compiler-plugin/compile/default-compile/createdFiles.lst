@@ -1,3 +1,4 @@
+com\merchant\payment\BuyNowPayLaterPayment.class
 com\merchant\domain\Product.class
 com\merchant\domain\ProductCatalogue.class
 com\merchant\domain\Customer.class

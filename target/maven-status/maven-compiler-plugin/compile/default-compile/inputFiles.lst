@@ -4,6 +4,7 @@ C:\Users\USER\IdeaProjects\merchant-order-desk-and-catalogue-engine-Straw-Hat-Lu
 C:\Users\USER\IdeaProjects\merchant-order-desk-and-catalogue-engine-Straw-Hat-Lucian\src\main\java\com\merchant\domain\OrderItem.java
 C:\Users\USER\IdeaProjects\merchant-order-desk-and-catalogue-engine-Straw-Hat-Lucian\src\main\java\com\merchant\domain\Product.java
 C:\Users\USER\IdeaProjects\merchant-order-desk-and-catalogue-engine-Straw-Hat-Lucian\src\main\java\com\merchant\domain\ProductCatalogue.java
+C:\Users\USER\IdeaProjects\merchant-order-desk-and-catalogue-engine-Straw-Hat-Lucian\src\main\java\com\merchant\payment\BuyNowPayLaterPayment.java
 C:\Users\USER\IdeaProjects\merchant-order-desk-and-catalogue-engine-Straw-Hat-Lucian\src\main\java\com\merchant\payment\CardPayment.java
 C:\Users\USER\IdeaProjects\merchant-order-desk-and-catalogue-engine-Straw-Hat-Lucian\src\main\java\com\merchant\payment\EftPayment.java
 C:\Users\USER\IdeaProjects\merchant-order-desk-and-catalogue-engine-Straw-Hat-Lucian\src\main\java\com\merchant\payment\PaymentMethod.java
