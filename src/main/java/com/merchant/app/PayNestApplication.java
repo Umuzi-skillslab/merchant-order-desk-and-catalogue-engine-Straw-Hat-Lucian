@@ -4,12 +4,11 @@ import com.merchant.domain.Customer;
 import com.merchant.domain.Order;
 import com.merchant.domain.Product;
 import com.merchant.domain.ProductCatalogue;
+import com.merchant.payment.*;
 import com.merchant.service.OrderService;
-import com.merchant.payment.CardPayment;
-import com.merchant.payment.PaymentMethod;
-import com.merchant.payment.Refundable;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class PayNestApplication {
 
@@ -28,24 +27,34 @@ public class PayNestApplication {
         // Create customer
         Customer customer = new Customer(1, "Lucian", "lucian@email.com");
 
-        // Create order
-        Order order = new Order(1, customer);
-
         OrderService service = new OrderService();
 
-        // Add items to order via the catalogue, through the service layer
-        service.addProductToOrder(order, catalogue, laptop.getId(), 1);
-        service.addProductToOrder(order, catalogue, keyboard.getId(), 2);
-        service.addProductToOrder(order, catalogue, mouse.getId(), 1);
+        // Every rail is typed as PaymentMethod, so the loop treats them all the same way
+        List<PaymentMethod> methods = List.of(
+                new CardPayment(),
+                new EftPayment(),
+                new WalletPayment(),
+                new BuyNowPayLaterPayment());
 
-        service.printOrderSummary(order);
-        PaymentMethod paymentMethod = new CardPayment();
-        if (paymentMethod instanceof  Refundable) {
-            Refundable refundable = (Refundable) paymentMethod;
-            order.refundableCheckout(refundable);
+        int orderId = 1;
 
-        } else {
-            order.checkout(paymentMethod);
+        for (PaymentMethod method : methods) {
+            Order freshOrder = new Order(orderId, customer);
+            orderId++;
+
+            service.addProductToOrder(freshOrder, catalogue, laptop.getId(), 1);
+            service.addProductToOrder(freshOrder, catalogue, keyboard.getId(), 2);
+            service.addProductToOrder(freshOrder, catalogue, mouse.getId(), 1);
+
+            service.printOrderSummary(freshOrder);
+
+            // Rails that can give money back use the refundable checkout
+            if (method instanceof Refundable) {
+                Refundable refundable = (Refundable) method;
+                freshOrder.refundableCheckout(refundable);
+            } else {
+                freshOrder.checkout(method);
+            }
         }
     }
 }
