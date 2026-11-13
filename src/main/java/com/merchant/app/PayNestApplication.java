@@ -33,7 +33,7 @@ public class PayNestApplication {
         List<PaymentMethod> methods = List.of(
                 new CardPayment(),
                 new EftPayment(),
-                new WalletPayment(),
+                new WalletPayment(20000),
                 new BuyNowPayLaterPayment());
 
         int orderId = 1;

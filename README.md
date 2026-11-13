@@ -71,6 +71,16 @@ the rule and there is no `if` on the rail type. In the demo I use
 `instanceof` and a cast to ask a rail "can you refund?". That asks about an
 ability, not about one specific rail.
 
+**Wallet: a rule of its own**
+Not every rule belongs in the shared code. `PaymentProcessor` refuses any
+amount of R0 or less for every rail, but only a wallet has a balance, so
+`WalletPayment` enforces its own rule: it holds a balance, declines a payment
+bigger than that balance (printing "insufficient funds") and returns `false`
+so the order is not completed. A successful payment takes the amount out of
+the balance, and a refund puts it back. A negative starting balance is
+rejected in the constructor. `Order` does not know any of this, because it
+only sees a `PaymentMethod` that answered `true` or `false`.
+
 **Validation**
 All domain constructors and mutating methods (`Order.addItem`,
 `ProductCatalogue.addProduct`) validate fail-fast: invalid input throws
@@ -81,7 +91,8 @@ Checkout and payments work the same way. A missing payment method throws
 `IllegalArgumentException`, and checking out an empty order throws
 `IllegalStateException`. Amounts of R0 or less are refused for both payments
 and refunds. I put those amount checks in `PaymentProcessor`, so every rail is
-protected by one copy and no rail needs its own.
+protected by one copy and none of them repeats that check. Rules that belong
+to one rail only, like the wallet balance, live inside that rail.
 
 **Money**
 Prices and totals use `BigDecimal` instead of `double`, since floating point
@@ -112,13 +123,14 @@ mvn compile exec:java
 This runs `com.merchant.app.PayNestApplication`. It builds a small catalogue
 and a customer, then creates one order for each payment rail (card, EFT,
 wallet and buy-now-pay-later). For each order it prints the summary and total,
-then pays for it. Card and wallet go through the refundable checkout.
+then pays for it. Card and wallet go through the refundable checkout. The demo
+wallet starts with R20000, which is enough to pay the R15900.00 order.
 
 To try a different set of rails, change the list in `PayNestApplication`:
 
 ```java
 List<PaymentMethod> methods = List.of(new CardPayment(), new EftPayment(),
-        new WalletPayment(), new BuyNowPayLaterPayment());
+        new WalletPayment(20000), new BuyNowPayLaterPayment());
 ```
 
 ## Running the tests
@@ -145,3 +157,5 @@ Test coverage includes:
 - Rejection of a missing payment method, an empty order, and amounts of R0 or
   less (payments and refunds)
 - Refunds for card and wallet, and EFT confirmed as not refundable
+- A R500 wallet declines a R600 order and keeps its money
+- Wallet balance goes down after a payment and back up after a refund

@@ -23,7 +23,7 @@ class PaymentMethodTest {
 
     @Test
     void checkoutWorksWithEveryPaymentType() {
-        List<PaymentMethod> methods = List.of(new CardPayment(), new EftPayment(), new WalletPayment(), new BuyNowPayLaterPayment());
+        List<PaymentMethod> methods = List.of(new CardPayment(), new EftPayment(), new WalletPayment(20000), new BuyNowPayLaterPayment());
 
         for (PaymentMethod method : methods) {
             assertTrue(buildOrder().checkout(method));
@@ -95,7 +95,7 @@ class PaymentMethodTest {
     void processorRefusesNegativeAmount() {
         PaymentProcessor processor = new PaymentProcessor();
 
-        assertFalse(processor.processPayment(new WalletPayment(), -50));
+        assertFalse(processor.processPayment(new WalletPayment(20000), -50));
     }
 
     @Test
@@ -109,7 +109,7 @@ class PaymentMethodTest {
         PaymentProcessor processor = new PaymentProcessor();
 
         assertTrue(processor.refundPayment(new CardPayment(), 100));
-        assertTrue(processor.refundPayment(new WalletPayment(), 100));
+        assertTrue(processor.refundPayment(new WalletPayment(20000), 100));
     }
 
     @Test
@@ -136,5 +136,37 @@ class PaymentMethodTest {
     @Test
     void refundableCheckoutWorksForCard() {
         assertTrue(buildOrder().refundableCheckout(new CardPayment()));
+    }
+
+    @Test
+    void walletDeclinesOrderBiggerThanBalanceAndKeepsItsMoney() {
+        WalletPayment wallet = new WalletPayment(500);
+        Order order = new Order(5, new Customer(1, "Lucian", "lucian@email.com"));
+        order.addItem(new Product(2, "Keyboard", new BigDecimal("300.00")), 2);
+
+        boolean paid = order.checkout(wallet);
+
+        assertFalse(paid);
+        assertEquals(500.0, wallet.getBalance(), 0.001);
+    }
+
+    @Test
+    void walletBalanceGoesDownAfterPayment() {
+        WalletPayment wallet = new WalletPayment(20000);
+
+        boolean paid = buildOrder().checkout(wallet);
+
+        assertTrue(paid);
+        assertEquals(4100.0, wallet.getBalance(), 0.001);
+    }
+
+    @Test
+    void walletBalanceGoesBackUpAfterRefund() {
+        WalletPayment wallet = new WalletPayment(20000);
+        buildOrder().checkout(wallet);
+
+        wallet.refund(15900);
+
+        assertEquals(20000.0, wallet.getBalance(), 0.001);
     }
 }
