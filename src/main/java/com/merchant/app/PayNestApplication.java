@@ -56,5 +56,13 @@ public class PayNestApplication {
                 freshOrder.checkout(method);
             }
         }
+
+        System.out.println();
+        System.out.println("--- Wallet with too little money ---");
+
+        WalletPayment smallWallet = new WalletPayment(500);
+        Order bigOrder = new Order(orderId, customer);
+        service.addProductToOrder(bigOrder, catalogue, laptop.getId(), 1);
+        bigOrder.checkout(smallWallet);
     }
 }
