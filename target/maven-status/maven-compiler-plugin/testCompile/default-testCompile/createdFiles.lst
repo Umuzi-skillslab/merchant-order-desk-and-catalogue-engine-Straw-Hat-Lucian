@@ -1,7 +1,0 @@
-com\merchant\domain\ProductCatalogueTest.class
-com\merchant\domain\ProductTest.class
-com\merchant\payment\PaymentMethodTest$FailingPayment.class
-com\merchant\domain\OrderTest.class
-com\merchant\service\OrderServiceTest.class
-com\merchant\payment\PaymentMethodTest.class
-com\merchant\payment\PaymentMethodTest$RecordingPayment.class
